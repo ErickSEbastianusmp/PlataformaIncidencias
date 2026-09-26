@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Plataforma de Incidencias";
+}
+
+<div class="hero-crema">
+    <h1 class="display-5">Plataforma de Incidencias</h1>
+    <p class="lead">Gestión operativa de estaciones: registro, seguimiento y cierre de incidencias en tiempo real.</p>
+    <a class="btn btn-confirm" asp-controller="Operaciones" asp-action="Incidencias">Ver incidencias abiertas</a>
+</div>
+
+<div class="row cards-row">
+    <div class="col-md-4">
+        <div class="card card-crema">
+            <div class="card-body">
+                <h5 class="card-title">Registro</h5>
+                <p class="card-text">Crea nuevos reportes con estación, descripción y prioridad.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card card-crema">
+            <div class="card-body">
+                <h5 class="card-title">Seguimiento</h5>
+                <p class="card-text">Filtra por estación o descripción y prioriza la operación.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card card-crema">
+            <div class="card-body">
+                <h5 class="card-title">Cierre en tiempo real</h5>
+                <p class="card-text">Cierra incidencias y notifica al equipo sin recargar.</p>
+            </div>
+        </div>
+    </div>
+</div>

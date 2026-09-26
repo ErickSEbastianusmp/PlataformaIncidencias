@@ -1,0 +1,291 @@
+@model IEnumerable<PlataformaIncidencias.Models.Incidencia>
+@{
+    ViewData["Title"] = "Incidencias";
+    var currentQuery = ViewData["Query"] as string ?? string.Empty;
+    var pieCluster = ViewData["PieHostCluster"] as string ?? "free3";
+    var pieChannel = ViewData["PieHostChannel"] as string ?? "incidencias-canal";
+    var pieKey = ViewData["PieHostKey"] as string ?? "REPLACE_PIEHOST_KEY";
+}
+<h1>Incidencias abiertas</h1>
+
+<div class="toolbar-incidencias">
+    <form method="get" asp-controller="Operaciones" asp-action="Incidencias" class="search-algolia" role="search">
+        <input type="text" name="query" value="@currentQuery" placeholder="Buscar por estación o descripción..." class="search-input" autocomplete="off" />
+        <button type="submit" class="btn btn-search">Buscar</button>
+        @if (!string.IsNullOrWhiteSpace(currentQuery))
+        {
+            <a asp-controller="Operaciones" asp-action="Incidencias" class="btn btn-clear">Limpiar</a>
+        }
+    </form>
+    <button type="button" class="btn btn-nueva" data-bs-toggle="modal" data-bs-target="#modalNuevaIncidencia">Nueva Incidencia</button>
+</div>
+
+@if (TempData["ErrorCrear"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorCrear"]</div>
+}
+
+<div class="panel-incidencias">
+    @if (!Model.Any())
+    {
+        <div class="alert alert-success">No hay incidencias abiertas.</div>
+    }
+    else
+    {
+        <table class="table table-incidencias" id="tabla-incidencias">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Estación</th>
+                    <th>Descripción</th>
+                    <th>Prioridad</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="incidencias-body">
+                @foreach (var item in Model)
+                {
+                    var prioridadClass = item.Prioridad switch
+                    {
+                        "Alta" => "badge-prioridad-alta",
+                        "Media" => "badge-prioridad-media",
+                        "Baja" => "badge-prioridad-baja",
+                        _ => "badge-prioridad-media"
+                    };
+                    <tr id="row-@item.Id" data-id="@item.Id">
+                        <td>@item.Id</td>
+                        <td>@item.Estacion</td>
+                        <td>@item.Descripcion</td>
+                        <td><span class="badge @prioridadClass">@item.Prioridad</span></td>
+                        <td><span class="badge badge-abierta">@item.Estado</span></td>
+                        <td>
+                            <form asp-controller="Operaciones" asp-action="Cerrar" asp-route-id="@item.Id" method="post" class="d-inline form-cerrar" data-id="@item.Id">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-cerrar" data-id="@item.Id">Cerrar Incidencia</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+<div class="modal fade modal-crema" id="modalNuevaIncidencia" tabindex="-1" aria-labelledby="modalNuevaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalNuevaLabel">Nueva Incidencia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <form asp-controller="Operaciones" asp-action="Crear" method="post" id="formNuevaIncidencia">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label" for="nuevaEstacion">Estación</label>
+                        <input class="form-control" type="text" id="nuevaEstacion" name="estacion" maxlength="100" required placeholder="Ej. Estación Norte" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="nuevaDescripcion">Descripción</label>
+                        <textarea class="form-control" id="nuevaDescripcion" name="descripcion" maxlength="500" rows="3" required placeholder="Describe la incidencia..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="nuevaPrioridad">Prioridad</label>
+                        <select class="form-select" id="nuevaPrioridad" name="prioridad" required>
+                            <option value="Alta">Alta</option>
+                            <option value="Media" selected>Media</option>
+                            <option value="Baja">Baja</option>
+                        </select>
+                    </div>
+                    <input type="hidden" name="estado" value="Abierta" />
+                    <small class="text-muted">El estado se registra por defecto como "Abierta".</small>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-clear" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-confirm" id="btnGuardarNueva">Guardar incidencia</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+(function () {
+    const pieChannel = "@pieChannel";
+    const pieCluster = "@pieCluster";
+
+    function prioridadClass(p) {
+        if (p === "Alta") return "badge-prioridad-alta";
+        if (p === "Baja") return "badge-prioridad-baja";
+        return "badge-prioridad-media";
+    }
+
+    function escapeHtml(s) {
+        return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    }
+
+    function removeRow(id) {
+        const row = document.getElementById("row-" + id);
+        if (row) {
+            row.style.transition = "opacity 0.4s";
+            row.style.opacity = "0";
+            setTimeout(() => row.remove(), 400);
+        }
+        const btn = document.querySelector('button.btn-cerrar[data-id="' + id + '"]');
+        if (btn) {
+            btn.disabled = true;
+            btn.textContent = "Cerrada";
+            btn.classList.add("btn-cerrada-ok");
+        }
+    }
+
+    function prependRow(item) {
+        const tbody = document.getElementById("incidencias-body");
+        if (!tbody) { location.reload(); return; }
+        const tr = document.createElement("tr");
+        tr.id = "row-" + item.id;
+        tr.setAttribute("data-id", item.id);
+        tr.innerHTML =
+            "<td>" + item.id + "</td>" +
+            "<td>" + escapeHtml(item.estacion) + "</td>" +
+            "<td>" + escapeHtml(item.descripcion) + "</td>" +
+            '<td><span class="badge ' + prioridadClass(item.prioridad) + '">' + escapeHtml(item.prioridad) + "</span></td>" +
+            '<td><span class="badge badge-abierta">' + escapeHtml(item.estado) + "</span></td>" +
+            "<td></td>";
+        tbody.prepend(tr);
+        attachCloseHandler(tr);
+    }
+
+    function attachCloseHandler(scope) {
+        scope.querySelectorAll("form.form-cerrar").forEach(bindCloseForm);
+    }
+
+    async function handleCloseSubmit(e) {
+        e.preventDefault();
+        const form = e.currentTarget;
+        const id = form.getAttribute("data-id");
+        const btn = form.querySelector("button.btn-cerrar");
+        if (btn) {
+            btn.disabled = true;
+            btn.textContent = "Cerrando...";
+        }
+        try {
+            const res = await fetch(form.action, {
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Accept": "application/json"
+                },
+                body: new FormData(form)
+            });
+            if (res.ok) {
+                removeRow(id);
+            } else {
+                form.submit();
+            }
+        } catch {
+            form.submit();
+        }
+    }
+
+    function bindCloseForm(form) {
+        if (!form.dataset.bound) {
+            form.dataset.bound = "1";
+            form.addEventListener("submit", handleCloseSubmit);
+        }
+    }
+
+    // Cierre vía AJAX: actualiza SQLite + Redis + WS sin recargar
+    document.querySelectorAll("form.form-cerrar").forEach(bindCloseForm);
+
+    // Crear vía AJAX: sincroniza SQLite, invalida Redis y agrega la fila sin recargar
+    const formNueva = document.getElementById("formNuevaIncidencia");
+    if (formNueva) {
+        formNueva.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById("btnGuardarNueva");
+            if (btn) { btn.disabled = true; btn.textContent = "Guardando..."; }
+            try {
+                const res = await fetch(formNueva.action, {
+                    method: "POST",
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Accept": "application/json"
+                    },
+                    body: new FormData(formNueva)
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.success) {
+                        prependRow(data);
+                        formNueva.reset();
+                        const modalEl = document.getElementById("modalNuevaIncidencia");
+                        const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                        modal.hide();
+                    }
+                } else {
+                    formNueva.submit();
+                    return;
+                }
+            } catch {
+                formNueva.submit();
+                return;
+            } finally {
+                if (btn) { btn.disabled = false; btn.textContent = "Guardar incidencia"; }
+            }
+        });
+    }
+
+    // Cliente WebSocket que escucha el canal de PieHost.
+    // Al recibir "IncidenciaActualizada", remueve la fila sin recargar.
+    function handlePieHostMessage(raw) {
+        try {
+            const msg = JSON.parse(raw);
+            const eventName = msg.event || msg.eventName || msg.type || (msg.data && msg.data.event);
+            const data = msg.data || msg.payload || msg;
+            const id = data && (data.id ?? data.Id ?? data.objectID);
+            const estado = data && (data.estado ?? data.Estado);
+            if (eventName === "IncidenciaActualizada" && id != null) {
+                // Solo remover cuando el estado es Cerrada; las creadas (Abierta) las agrega el creador vía AJAX
+                if (estado === "Cerrada") {
+                    removeRow(id);
+                }
+                return;
+            }
+            if (msg.channel === pieChannel && msg.event === "IncidenciaActualizada" && msg.data && msg.data.id != null) {
+                if (msg.data.estado === "Cerrada") {
+                    removeRow(msg.data.id);
+                }
+            }
+        } catch { /* mensaje no JSON, se ignora */ }
+    }
+
+    function connectPieHost() {
+        const url = "wss://" + pieCluster + ".piehost.com/app?channel=" + encodeURIComponent(pieChannel);
+        try {
+            const ws = new WebSocket(url);
+            ws.onopen = () => {
+                ws.send(JSON.stringify({ action: "subscribe", channel: pieChannel }));
+            };
+            ws.onmessage = (e) => handlePieHostMessage(e.data);
+            ws.onerror = () => { try { ws.close(); } catch {} };
+            ws.onclose = () => {
+                const key = "@pieKey";
+                if (key && key.indexOf("REPLACE") === -1) {
+                    setTimeout(connectPieHost, 15000);
+                }
+            };
+            window.__pieHostSocket = ws;
+        } catch { /* WebSocket no disponible, la tabla sigue funcional */ }
+    }
+
+    if ("WebSocket" in window) {
+        connectPieHost();
+    }
+
+    window.handleIncidenciaActualizada = function (id) { removeRow(id); };
+})();
+</script>
+}

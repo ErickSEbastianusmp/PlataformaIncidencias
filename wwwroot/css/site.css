@@ -1,0 +1,369 @@
+/* Paleta Plataforma de Incidencias: Crema, Rojo Borgoña y Verde Esmeralda */
+:root {
+    --crema-fondo: #FDFBF7;
+    --crema-borde: #EFECE6;
+    --blanco-suave: #FFFEFB;
+    --blanco-calido: #FFFEFB;
+    --borgona: #8B0000;
+    --borgona-claro: #A52A2A;
+    --carmesi: #B03040;
+    --verde-esmeralda-oscuro: #1B4D3E;
+    --verde-esmeralda: #2E8B57;
+    --naranja-media: #E67E22;
+    --rojo-alta: #C0392B;
+    --verde-baja: #2E8B57;
+}
+
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+  background-color: var(--crema-fondo);
+  color: #2b2b2b;
+}
+
+/* Barra de navegación Borgoña */
+.navbar-borgona {
+  background-color: var(--borgona) !important;
+  border-bottom: 3px solid var(--borgona-claro);
+}
+
+.navbar-borgona .navbar-brand,
+.navbar-borgona .nav-link {
+  color: #FFF8F0 !important;
+  font-weight: 600;
+}
+
+.navbar-borgona .nav-link:hover {
+  color: #EFECE6 !important;
+  text-decoration: underline;
+}
+
+.supervisor-badge {
+  color: #FFF8F0 !important;
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 20px;
+  padding: 0.25rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.navbar-borgona .navbar-toggler {
+  border-color: #FFF8F0;
+}
+
+/* Contenedor central limpio */
+.main-container {
+  background-color: var(--blanco-calido);
+  border: 1px solid var(--crema-borde);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-top: 2rem;
+  box-shadow: 0 2px 12px rgba(139, 0, 0, 0.06);
+}
+
+/* Encabezados */
+h1 {
+  color: var(--borgona);
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  border-bottom: 3px solid var(--borgona-claro);
+  padding-bottom: 0.5rem;
+}
+
+/* Tarjetas / Paneles: blanco suave con bordes crema */
+.panel-incidencias {
+  background-color: var(--blanco-suave);
+  border: 1px solid var(--crema-borde);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.card {
+  background-color: var(--blanco-suave);
+  border-color: var(--crema-borde);
+}
+
+.card-crema {
+  background-color: var(--blanco-suave);
+  border: 1px solid var(--crema-borde);
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(139, 0, 0, 0.05);
+}
+
+.hero-crema {
+  background-color: var(--blanco-suave);
+  border: 1px solid var(--crema-borde);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.hero-crema h1 {
+  border-bottom: none;
+  margin-bottom: 0.5rem;
+}
+
+.cards-row {
+  margin-top: 1rem;
+}
+
+/* Botones: confirmación verde esmeralda, cierre borgoña */
+.btn-confirm {
+  background-color: var(--verde-esmeralda-oscuro);
+  border-color: var(--verde-esmeralda-oscuro);
+  color: #fff;
+  font-weight: 600;
+}
+
+.btn-confirm:hover {
+  background-color: var(--verde-esmeralda);
+  border-color: var(--verde-esmeralda);
+  color: #fff;
+}
+
+/* Botones principales Borgoña */
+.btn-primary,
+.btn-cerrar {
+  background-color: var(--borgona);
+  border-color: var(--borgona);
+  color: #fff;
+  font-weight: 600;
+}
+
+.btn-primary:hover,
+.btn-cerrar:hover {
+  background-color: var(--borgona-claro);
+  border-color: var(--borgona-claro);
+  color: #fff;
+}
+
+/* Tabla de incidencias */
+.table-incidencias {
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table-incidencias thead {
+  background-color: var(--borgona);
+  color: #fff;
+}
+
+.table-incidencias thead th {
+  border: none;
+  padding: 0.9rem;
+}
+
+.table-incidencias tbody tr {
+  border-bottom: 1px solid var(--crema-borde);
+}
+
+.table-incidencias tbody tr:hover {
+  background-color: var(--crema-fondo);
+}
+
+/* Badges */
+.badge {
+  padding: 0.4em 0.8em;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.badge-abierta {
+  background-color: var(--verde-esmeralda-oscuro);
+  color: #fff;
+}
+
+.badge-cerrada {
+  background-color: var(--borgona);
+  color: #fff;
+}
+
+.badge-prioridad-alta {
+  background-color: var(--rojo-alta);
+  color: #fff;
+}
+
+.badge-prioridad-media {
+  background-color: var(--naranja-media);
+  color: #fff;
+}
+
+.badge-prioridad-baja {
+  background-color: var(--verde-baja);
+  color: #fff;
+}
+
+.footer {
+  background-color: var(--crema-fondo);
+}
+
+.footer-custom {
+  background-color: var(--crema-fondo);
+  border-top: 1px solid var(--crema-borde);
+  color: var(--borgona);
+  font-weight: 500;
+  padding: 1rem 0;
+  margin-top: 2rem;
+  text-align: center;
+}
+
+/* Formulario de búsqueda Algolia: crema + verde/rojo */
+.search-algolia {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  background-color: var(--blanco-calido);
+  border: 1px solid var(--crema-borde);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 1px 6px rgba(27, 77, 62, 0.06);
+}
+
+.search-algolia .search-input {
+  flex: 1;
+  background-color: var(--crema-fondo);
+  border: 1px solid var(--crema-borde);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  color: #2b2b2b;
+}
+
+.search-algolia .search-input:focus {
+  outline: none;
+  border-color: var(--verde-esmeralda);
+  box-shadow: 0 0 0 0.15rem rgba(46, 139, 87, 0.25);
+}
+
+.btn-search {
+  background-color: var(--verde-esmeralda-oscuro);
+  border-color: var(--verde-esmeralda-oscuro);
+  color: #fff;
+  font-weight: 600;
+}
+
+.btn-search:hover {
+  background-color: var(--verde-esmeralda);
+  border-color: var(--verde-esmeralda);
+  color: #fff;
+}
+
+.btn-clear {
+  background-color: transparent;
+  border: 1px solid var(--borgona-claro);
+  color: var(--borgona);
+  font-weight: 600;
+}
+
+.btn-clear:hover {
+  background-color: var(--borgona);
+  border-color: var(--borgona);
+  color: #fff;
+}
+
+/* Botones Cerrar: Rojo Borgoña con estados dinámicos */
+.btn-cerrar {
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-cerrar:disabled {
+  opacity: 0.75;
+  cursor: wait;
+}
+
+.btn-cerrar.btn-cerrada-ok {
+  background-color: var(--verde-esmeralda);
+  border-color: var(--verde-esmeralda);
+}
+
+#incidencias-body tr {
+  transition: opacity 0.4s;
+}
+
+/* Barra de herramientas: buscador + Nueva Incidencia */
+.toolbar-incidencias {
+  display: flex;
+  gap: 0.8rem;
+  align-items: stretch;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.toolbar-incidencias .search-algolia {
+  flex: 1;
+  min-width: 260px;
+  margin-bottom: 0;
+}
+
+.btn-nueva {
+  background-color: var(--verde-esmeralda-oscuro);
+  border-color: var(--verde-esmeralda-oscuro);
+  color: #fff;
+  font-weight: 700;
+  white-space: nowrap;
+  align-self: center;
+  padding: 0.65rem 1.2rem;
+}
+
+.btn-nueva:hover {
+  background-color: var(--verde-esmeralda);
+  border-color: var(--verde-esmeralda);
+  color: #fff;
+}
+
+/* Modal Nueva Incidencia */
+.modal-crema .modal-content {
+  background-color: var(--blanco-suave);
+  border: 1px solid var(--crema-borde);
+  border-radius: 12px;
+}
+
+.modal-crema .modal-header {
+  background-color: var(--borgona);
+  color: #FFF8F0;
+  border-bottom: 2px solid var(--borgona-claro);
+  border-radius: 12px 12px 0 0;
+}
+
+.modal-crema .modal-header .btn-close {
+  filter: invert(1);
+}
+
+.modal-crema .form-label {
+  font-weight: 600;
+  color: var(--verde-esmeralda-oscuro);
+}
+
+.modal-crema .form-control,
+.modal-crema .form-select {
+  background-color: var(--crema-fondo);
+  border: 1px solid var(--crema-borde);
+}
+
+.modal-crema .form-control:focus,
+.modal-crema .form-select:focus {
+  border-color: var(--verde-esmeralda);
+  box-shadow: 0 0 0 0.15rem rgba(27, 77, 62, 0.2);
+}
